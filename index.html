@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track What You Pack</title>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+    <!-- Include the "SignPainter" font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Sign+Painter&display=swap" rel="stylesheet">
+    <style>
+        /* Set the background color of the webpage to black */
+        body {
+            background-color: black;
+            margin: 0; /* Remove default body margin */
+            padding: 0; /* Remove default body padding */
+            overflow: hidden; /* Hide any potential scroll bars */
+        }
+
+        /* Style for the orange title with a larger font size at the bottom left of the page */
+        #title {
+            color: orange;
+            text-align: left;
+            font-size: 80px; /* Adjust the font size to make it larger */
+            margin: 20px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            font-family: 'Skia Black Extended', sans-serif; /* Use the "Skia Black Extended" font */
+        }
+
+        /* Style for the map container to fill the whole page */
+        #map {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        /* Style for the logo at the top right of the page */
+        #company-logo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 200px; /* Adjust the width of the logo as needed */
+            height: 200px; /* Adjust the height of the logo as needed */
+            z-index: 1; /* Ensure the logo is on top of the map */
+        }
+
+        /* Style for the image at the bottom right of the map */
+        #bottom-right-image {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 200px; /* Adjust the width of the image as needed */
+            height: 200px; /* Adjust the height of the image as needed */
+            z-index: 1; /* Ensure the image is on top of the map */
+        }
+
+        /* Style for the draggable image */
+        .draggable-image {
+            position: absolute;
+            width: 100px; /* Adjust the width of the image as needed */
+            height: 100px; /* Adjust the height of the image as needed */
+            bottom: 40px;
+            left: 800px;
+            cursor: pointer;
+            touch-action: none; /* Disable default touch behavior */
+        }
+
+        /* Style for the search container */
+        #search-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 2;
+        }
+
+        /* Style for the search input */
+        #search {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            /* Adjust styles for mobile devices here */
+            #company-logo {
+                top: 10px;
+                right: 10px;
+                width: 100px;
+                height: 100px;
+            }
+
+            #bottom-right-image {
+                bottom: 10px;
+                right: 10px;
+                width: 100px;
+                height: 100px;
+            }
+
+            #search-container {
+                top: 10px;
+                left: 10px;
+            }
+
+            #search {
+                width: 200px;
+                font-size: 14px;
+            }
+
+            /* Style for the draggable image */
+            .draggable-image {
+                position: absolute;
+                width: 40px; /* Adjust the width of the image as needed */
+                height: 40px; /* Adjust the height of the image as needed */
+                bottom: 50px;
+                left: 15px;
+                cursor: pointer;
+            }
+
+            /* Adjust the font size for the slogan on mobile devices */
+            #title {
+                font-size: 24px; /* Adjust the font size for mobile */
+            }
+
+            /* Ensure the map container has a minimum height on smaller screens */
+            #map {
+                min-height: 300px; /* Adjust this value as needed */
+            }
+        }
+      /* Adjust styles for mobile landscape devices here */
+@media (max-width: 1024px) and (orientation: landscape) {
+    #company-logo {
+        top: 10px;
+        right: 10px;
+        width: 80px;
+        height: 80px;
+    }
+
+    #bottom-right-image {
+        bottom: 10px;
+        right: 10px;
+        width: 80px;
+        height: 80px;
+    }
+
+    #search {
+        width: 200px;
+        font-size: 14px;
+    }
+
+    .draggable-image {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        bottom: 50px;
+        left: 15px;
+        cursor: pointer;
+    }
+
+    /* Adjust the font size for the slogan on mobile devices */
+    #title {
+                font-size: 24px; /* Adjust the font size for mobile */
+            }
+}
+
+
+
+        /* Style for the custom modal confirmation dialog */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%;
+            text-align: center;
+        }
+
+        .modal-content p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .modal-content button {
+            font-size: 16px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="search-container">
+        <input
+            id="search"
+            type="text"
+            placeholder="Search for a place..."
+        />
+    </div>
+
+    <div id="toolbar">
+        <!-- Add toolbar buttons with icons -->
+        <button class="toolbar-button">"Elev."</button> 
+        <button class="toolbar-button">"Temp."</button> 
+    </div>
+    <img id="company-logo" src="Logo.png" alt="Company Logo"> <!-- Add your logo image URL and alt text -->
+    <div id="map"></div>
+    <div id="title">Track What You Pack</div> <!-- Add the orange title at the bottom left of the page -->
+    <img id="bottom-right-image" src="Puffer.png" alt="Image"> <!-- Add your image URL and alt text -->
+
+    <!-- Draggable Image -->
+    <img class="draggable-image" src="Pin.png" alt="Draggable Image" draggable="true" id="draggable-image">
+
+    <!-- Add the custom modal dialog HTML -->
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to delete this pin?</p>
+            <button id="confirm-delete">Yes</button>
+            <button id="cancel-delete">No</button>
+        </div>
+    </div>
+
+    <script>
+        // Your Mapbox Access Token
+        mapboxgl.accessToken = 'pk.eyJ1IjoibXJtYXB6MzMiLCJhIjoiY2xtanBmNzZ4MDU1MTJrbDhmb3FxeW51NSJ9.pAVI4jVRkjQAQcu0xCUYqA';
+
+        // Create a map instance
+        var map = new mapboxgl.Map({
+            container: 'map', // Specify the container ID
+            style: 'mapbox://styles/mapbox/dark-v10', // Use the dark-v10 style for a black background
+            center: [-99.3, 38], // Longitude and latitude of the initial map center (US center)
+            zoom: 2 // Adjust the zoom level as needed
+        });
+
+        // Function to handle the search functionality
+        document.getElementById("search").addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                var searchText = e.target.value;
+                geocode(searchText);
+            }
+        });
+
+        // Function to geocode a location and fit the map to it
+        function geocode(location) {
+            fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${location}.json?access_token=${mapboxgl.accessToken}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.features.length > 0) {
+                        var bbox = data.features[0].bbox; // Get the bounding box
+                        map.fitBounds(bbox, { padding: 50 }); // Fit the map to the bounding box with padding
+                    } else {
+                        alert("Location not found!");
+                    }
+                })
+                .catch(error => console.error(error));
+        }
+
+        // Define an array to store the dropped pins and their coordinates
+        var droppedPins = [];
+
+        // Function to show the custom modal dialog
+        function showConfirmationModal(callback) {
+            const modal = document.getElementById("confirmation-modal");
+            modal.style.display = "block";
+
+            // Handle the "Yes" button click
+            document.getElementById("confirm-delete").addEventListener("click", function () {
+                modal.style.display = "none";
+                callback(true); // Callback with "true" to confirm deletion
+            });
+
+            // Handle the "No" button click
+            document.getElementById("cancel-delete").addEventListener("click", function () {
+                modal.style.display = "none";
+                callback(false); // Callback with "false" to cancel deletion
+            });
+        }
+
+        // Function to create a new pin element
+        function createPinElement(lng, lat) {
+            const pinElement = new Image();
+            pinElement.src = "Pin.png"; // Replace with your image URL
+            pinElement.width = 25; // Adjust width as needed
+            pinElement.height = 25; // Adjust height as needed
+            pinElement.style.position = "absolute";
+            pinElement.style.left = "0px"; // Pin is positioned on the map using mapbox
+            pinElement.style.top = "0px"; // Pin is positioned on the map using mapbox
+
+            // Add the pin to the map at the specified coordinates
+            const pinMarker = new mapboxgl.Marker(pinElement)
+                .setLngLat([lng, lat])
+                .addTo(map);
+
+            // Add a right-click event listener to delete the pin with confirmation
+            pinElement.addEventListener("contextmenu", function (event) {
+                event.preventDefault(); // Prevent the default context menu
+                showConfirmationModal(function (confirmed) {
+                    if (confirmed) {
+                        deletePin(pinElement, { lng, lat });
+                    }
+                });
+            });
+
+            return pinElement;
+        }
+
+        const mapContainer = document.getElementById("map");
+
+        mapContainer.addEventListener("dragover", (event) => {
+            // Prevent the default behavior to allow a drop
+            event.preventDefault();
+        });
+
+        mapContainer.addEventListener("drop", (event) => {
+            // Prevent the default behavior (preventing the page from redirecting)
+            event.preventDefault();
+
+            // Calculate the geographic coordinates of the drop location
+            const lngLat = map.unproject([event.clientX, event.clientY]);
+
+            // Create a new pin object to store the pin and its coordinates
+            const newPin = {
+                lngLat: [lngLat.lng, lngLat.lat]
+            };
+
+            // Append the new pin to the droppedPins array
+            droppedPins.push(newPin);
+
+            // Create and add the pin element to the map
+            createPinElement(lngLat.lng, lngLat.lat);
+
+            // Save the droppedPins array to local storage
+            savePinsToLocalStorage();
+        });
+
+        // Function to set local storage with dropped pins
+        function savePinsToLocalStorage() {
+            localStorage.setItem("droppedPins", JSON.stringify(droppedPins));
+        }
+
+        // Function to load dropped pins from local storage
+        function loadPinsFromLocalStorage() {
+            var savedPins = localStorage.getItem("droppedPins");
+            if (savedPins) {
+                droppedPins = JSON.parse(savedPins);
+                droppedPins.forEach(function (pin) {
+                    const pinElement = createPinElement(pin.lngLat[0], pin.lngLat[1]);
+
+                    // Add a right-click event listener to delete the pin with confirmation
+                    pinElement.addEventListener("contextmenu", function (event) {
+                        event.preventDefault(); // Prevent the default context menu
+                        showConfirmationModal(function (confirmed) {
+                            if (confirmed) {
+                                deletePin(pinElement, { lng: pin.lngLat[0], lat: pin.lngLat[1] });
+                            }
+                        });
+                    });
+                });
+            }
+        }
+
+        // Function to delete a pin from the map and local storage
+        function deletePin(pinElement, { lng, lat }) {
+            // Remove the pin from the map
+            pinElement.parentNode.removeChild(pinElement);
+
+            // Remove the pin from the droppedPins array
+            const index = droppedPins.findIndex(pin => pin.lngLat[0] === lng && pin.lngLat[1] === lat);
+            if (index !== -1) {
+                droppedPins.splice(index, 1);
+            }
+
+            // Save the updated droppedPins array to local storage
+            savePinsToLocalStorage();
+        }
+
+        // Load pins from local storage on page load
+        loadPinsFromLocalStorage();
+
+        // Touch event listeners for draggable image
+        const draggableImage = document.getElementById("draggable-image");
+
+        let offsetX, offsetY;
+
+        // Function to handle touch start event
+        function onTouchStart(event) {
+            const touch = event.touches[0];
+            offsetX = touch.clientX - draggableImage.getBoundingClientRect().left;
+            offsetY = touch.clientY - draggableImage.getBoundingClientRect().top;
+        }
+
+        // Function to handle touch move event
+        function onTouchMove(event) {
+            event.preventDefault();
+            const touch = event.touches[0];
+            const x = touch.clientX - offsetX;
+            const y = touch.clientY - offsetY;
+            draggableImage.style.left = x + "px";
+            draggableImage.style.top = y + "px";
+        }
+
+        // Function to handle touch end event
+        function onTouchEnd(event) {
+            // Get the final position of the draggable image
+            const finalX = parseFloat(draggableImage.style.left);
+            const finalY = parseFloat(draggableImage.style.top);
+
+            // Calculate the geographic coordinates of the final position
+            const lngLat = map.unproject([finalX, finalY]);
+
+            // Create a new pin object to store the pin and its coordinates
+            const newPin = {
+                lngLat: [lngLat.lng, lngLat.lat]
+            };
+
+            // Append the new pin to the droppedPins array
+            droppedPins.push(newPin);
+
+            // Create and add the pin element to the map
+            createPinElement(lngLat.lng, lngLat.lat);
+
+            // Save the droppedPins array to local storage
+            savePinsToLocalStorage();
+
+            // Reset the draggable image's position
+            draggableImage.style.left = "800px";
+            draggableImage.style.top = "40px";
+        }
+
+        // Add touch event listeners to the draggable image
+        draggableImage.addEventListener("touchstart", onTouchStart);
+        draggableImage.addEventListener("touchmove", onTouchMove);
+        draggableImage.addEventListener("touchend", onTouchEnd);
+
+    </script>
+</body>
+</html>
