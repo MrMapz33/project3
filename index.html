@@ -440,7 +440,7 @@
             savePinsToLocalStorage();
 
             // Reset the draggable image's position
-            draggableImage.style.left = "800px";
+            draggableImage.style.left = "200px";
             draggableImage.style.top = "40px";
         }
 
@@ -449,32 +449,6 @@
         draggableImage.addEventListener("touchmove", onTouchMove);
         draggableImage.addEventListener("touchend", onTouchEnd);
 
-          // Function to respawn a pin when dropped
-        function respawnPin() {
-            // Create a new pin element and add it to the map
-            const lngLat = map.unproject([800, 40]); // Initial position for the new pin
-            createPinElement(lngLat.lng, lngLat.lat);
-        }
-
-        // Function to handle the touch end event for draggable image
-        function onTouchEnd(event) {
-            // ... (Your existing onTouchEnd code) ...
-
-            // Reset the draggable image's position
-            draggableImage.style.left = "800px";
-            draggableImage.style.top = "40px";
-
-            // Respawn a new pin at the initial position
-            respawnPin();
-        }
-
-        // Add touch event listeners to the draggable image
-        draggableImage.addEventListener("touchstart", onTouchStart);
-        draggableImage.addEventListener("touchmove", onTouchMove);
-        draggableImage.addEventListener("touchend", onTouchEnd);
-
-        // Initial respawn of a pin
-        respawnPin();
     </script>
 </body>
 </html>
