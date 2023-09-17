@@ -63,8 +63,8 @@
             position: absolute;
             width: 100px; /* Adjust the width of the image as needed */
             height: 100px; /* Adjust the height of the image as needed */
-            bottom: 40px;
-            left: 800px;
+            left: 25px;
+            bottom: 50px;
             cursor: pointer;
             touch-action: none; /* Disable default touch behavior */
         }
@@ -119,8 +119,8 @@
                 position: absolute;
                 width: 40px; /* Adjust the width of the image as needed */
                 height: 40px; /* Adjust the height of the image as needed */
+                left: 25px;
                 bottom: 50px;
-                left: 15px;
                 cursor: pointer;
             }
 
@@ -159,17 +159,17 @@
         position: absolute;
         width: 60px;
         height: 60px;
+        left: 25px;
         bottom: 50px;
-        left: 15px;
         cursor: pointer;
     }
 
-    /* Adjust the font size for the slogan on mobile devices */
-    #title {
-                font-size: 24px; /* Adjust the font size for mobile */
-            }
 }
 
+    /* Adjust the font size for the slogan on mobile devices */
+    #title {
+        font-size: 24px; /* Adjust the font size for mobile */
+    }
 
 
         /* Style for the custom modal confirmation dialog */
@@ -226,7 +226,7 @@
     <img id="bottom-right-image" src="Puffer.png" alt="Image"> <!-- Add your image URL and alt text -->
 
     <!-- Draggable Image -->
-    <img class="draggable-image" src="Pin.png" alt="Draggable Image" draggable="true" id="draggable-image">
+    <img class="draggable-image" src="Pin.png" alt="Draggable Image" draggable="true" id="draggable-image" style="left: 0px; bottom: 0px;">
 
     <!-- Add the custom modal dialog HTML -->
     <div id="confirmation-modal" class="modal">
@@ -364,7 +364,7 @@
                     const pinElement = createPinElement(pin.lngLat[0], pin.lngLat[1]);
 
                     // Add a right-click event listener to delete the pin with confirmation
-                    pinElement.addEventListener("contextmenu", function (event) {
+                    pinElement.addEventListener("click", function (event) {
                         event.preventDefault(); // Prevent the default context menu
                         showConfirmationModal(function (confirmed) {
                             if (confirmed) {
@@ -440,8 +440,8 @@
             savePinsToLocalStorage();
 
             // Reset the draggable image's position
-            draggableImage.style.left = "200px";
-            draggableImage.style.top = "40px";
+            draggableImage.style.left = "10px";
+            draggableImage.style.top = "748px";
         }
 
         // Add touch event listeners to the draggable image
