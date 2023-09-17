@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track What You Pack</title>
+    <title>TEST</title>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
     <!-- Include the "SignPainter" font from Google Fonts -->
@@ -241,7 +241,6 @@
         // Your Mapbox Access Token
         mapboxgl.accessToken = 'pk.eyJ1IjoibXJtYXB6MzMiLCJhIjoiY2xtanBmNzZ4MDU1MTJrbDhmb3FxeW51NSJ9.pAVI4jVRkjQAQcu0xCUYqA';
 
-        
         // Create a map instance
         var map = new mapboxgl.Map({
             container: 'map', // Specify the container ID
@@ -417,38 +416,33 @@
             draggableImage.style.top = y + "px";
         }
 
-       // Function to handle touch end event
-// Function to handle touch end event
-function onTouchEnd(event) {
-    // Get the final position of the draggable image
-    const finalX = parseFloat(draggableImage.style.left);
-    const finalY = parseFloat(draggableImage.style.top);
+        // Function to handle touch end event
+        function onTouchEnd(event) {
+            // Get the final position of the draggable image
+            const finalX = parseFloat(draggableImage.style.left);
+            const finalY = parseFloat(draggableImage.style.top);
 
-    // Calculate the geographic coordinates of the final position
-    const lngLat = map.unproject([finalX, finalY]);
+            // Calculate the geographic coordinates of the final position
+            const lngLat = map.unproject([finalX, finalY]);
 
-    // Create and add the pin element to the map
-    const newPinElement = createPinElement(lngLat.lng, lngLat.lat);
+            // Create a new pin object to store the pin and its coordinates
+            const newPin = {
+                lngLat: [lngLat.lng, lngLat.lat]
+            };
 
-    // Save the droppedPins array to local storage
-    savePinsToLocalStorage();
+            // Append the new pin to the droppedPins array
+            droppedPins.push(newPin);
 
+            // Create and add the pin element to the map
+            createPinElement(lngLat.lng, lngLat.lat);
 
-    // Reset the draggable image's position to be on the bottom left of the screen
-    draggableImage.style.left = "10px"; // Adjust the left position as needed
-    draggableImage.style.top = (window.innerHeight - 107) + "px"; // Adjust the top position as needed
+            // Save the droppedPins array to local storage
+            savePinsToLocalStorage();
 
-    // Replace the draggable image with the new pin element
-    draggableImage = newPinElement;
-
-    // Add touch event listeners to the new draggable image
-    draggableImage.addEventListener("touchstart", onTouchStart);
-    draggableImage.addEventListener("touchmove", onTouchMove);
-    draggableImage.addEventListener("touchend", onTouchEnd);
-}
-
-
-       
+            // Reset the draggable image's position
+            draggableImage.style.left = "200px";
+            draggableImage.style.top = "40px";
+        }
 
         // Add touch event listeners to the draggable image
         draggableImage.addEventListener("touchstart", onTouchStart);
