@@ -241,6 +241,7 @@
         // Your Mapbox Access Token
         mapboxgl.accessToken = 'pk.eyJ1IjoibXJtYXB6MzMiLCJhIjoiY2xtanBmNzZ4MDU1MTJrbDhmb3FxeW51NSJ9.pAVI4jVRkjQAQcu0xCUYqA';
 
+        
         // Create a map instance
         var map = new mapboxgl.Map({
             container: 'map', // Specify the container ID
@@ -416,33 +417,38 @@
             draggableImage.style.top = y + "px";
         }
 
-        // Function to handle touch end event
-        function onTouchEnd(event) {
-            // Get the final position of the draggable image
-            const finalX = parseFloat(draggableImage.style.left);
-            const finalY = parseFloat(draggableImage.style.top);
+       // Function to handle touch end event
+// Function to handle touch end event
+function onTouchEnd(event) {
+    // Get the final position of the draggable image
+    const finalX = parseFloat(draggableImage.style.left);
+    const finalY = parseFloat(draggableImage.style.top);
 
-            // Calculate the geographic coordinates of the final position
-            const lngLat = map.unproject([finalX, finalY]);
+    // Calculate the geographic coordinates of the final position
+    const lngLat = map.unproject([finalX, finalY]);
 
-            // Create a new pin object to store the pin and its coordinates
-            const newPin = {
-                lngLat: [lngLat.lng, lngLat.lat]
-            };
+    // Create and add the pin element to the map
+    const newPinElement = createPinElement(lngLat.lng, lngLat.lat);
 
-            // Append the new pin to the droppedPins array
-            droppedPins.push(newPin);
+    // Save the droppedPins array to local storage
+    savePinsToLocalStorage();
 
-            // Create and add the pin element to the map
-            createPinElement(lngLat.lng, lngLat.lat);
 
-            // Save the droppedPins array to local storage
-            savePinsToLocalStorage();
+    // Reset the draggable image's position to be on the bottom left of the screen
+    draggableImage.style.left = "10px"; // Adjust the left position as needed
+    draggableImage.style.top = (window.innerHeight - 107) + "px"; // Adjust the top position as needed
 
-            // Reset the draggable image's position
-            draggableImage.style.left = "100px";
-            draggableImage.style.bottom = "0px";
-        }
+    // Replace the draggable image with the new pin element
+    draggableImage = newPinElement;
+
+    // Add touch event listeners to the new draggable image
+    draggableImage.addEventListener("touchstart", onTouchStart);
+    draggableImage.addEventListener("touchmove", onTouchMove);
+    draggableImage.addEventListener("touchend", onTouchEnd);
+}
+
+
+       
 
         // Add touch event listeners to the draggable image
         draggableImage.addEventListener("touchstart", onTouchStart);
