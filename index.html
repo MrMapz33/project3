@@ -88,6 +88,17 @@
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
         }
 
+        /* Add CSS for the pin container */
+        .pin-container {
+            position: absolute;
+            width: 50px; /* Adjust the size of the clickable area */
+            height: 50px; /* Adjust the size of the clickable area */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
         @media (max-width: 768px) {
             /* Adjust styles for mobile devices here */
             #company-logo {
@@ -134,43 +145,41 @@
                 min-height: 300px; /* Adjust this value as needed */
             }
         }
-      /* Adjust styles for mobile landscape devices here */
-@media (max-width: 1024px) and (orientation: landscape) {
-    #company-logo {
-        top: 10px;
-        right: 10px;
-        width: 80px;
-        height: 80px;
-    }
+        /* Adjust styles for mobile landscape devices here */
+        @media (max-width: 1024px) and (orientation: landscape) {
+            #company-logo {
+                top: 10px;
+                right: 10px;
+                width: 80px;
+                height: 80px;
+            }
 
-    #bottom-right-image {
-        bottom: 10px;
-        right: 10px;
-        width: 80px;
-        height: 80px;
-    }
+            #bottom-right-image {
+                bottom: 10px;
+                right: 10px;
+                width: 80px;
+                height: 80px;
+            }
 
-    #search {
-        width: 200px;
-        font-size: 14px;
-    }
+            #search {
+                width: 200px;
+                font-size: 14px;
+            }
 
-    .draggable-image {
-        position: absolute;
-        width: 60px;
-        height: 60px;
-        left: 25px;
-        bottom: 50px;
-        cursor: pointer;
-    }
+            .draggable-image {
+                position: absolute;
+                width: 60px;
+                height: 60px;
+                left: 25px;
+                bottom: 50px;
+                cursor: pointer;
+            }
+        }
 
-}
-
-    /* Adjust the font size for the slogan on mobile devices */
-    #title {
-        font-size: 24px; /* Adjust the font size for mobile */
-    }
-
+        /* Adjust the font size for the slogan on mobile devices */
+        #title {
+            font-size: 24px; /* Adjust the font size for mobile */
+        }
 
         /* Style for the custom modal confirmation dialog */
         .modal {
@@ -295,30 +304,40 @@
 
         // Function to create a new pin element
         function createPinElement(lng, lat) {
+            // Create a pin container div
+            const pinContainer = document.createElement("div");
+            pinContainer.className = "pin-container";
+
+            // Create the pin image
             const pinElement = new Image();
             pinElement.src = "Pin.png"; // Replace with your image URL
             pinElement.width = 35; // Adjust width as needed
             pinElement.height = 35; // Adjust height as needed
-            pinElement.style.position = "absolute";
-            pinElement.style.left = "0px"; // Pin is positioned on the map using mapbox
-            pinElement.style.top = "0px"; // Pin is positioned on the map using mapbox
 
-            // Add the pin to the map at the specified coordinates
-            const pinMarker = new mapboxgl.Marker(pinElement)
+            // Add the pin image to the pin container
+            pinContainer.appendChild(pinElement);
+
+            // Set the position of the pin container
+            pinContainer.style.position = "absolute";
+            pinContainer.style.left = "0px"; // Pin is positioned on the map using mapbox
+            pinContainer.style.top = "0px"; // Pin is positioned on the map using mapbox
+
+            // Add the pin container to the map
+            const pinMarker = new mapboxgl.Marker(pinContainer)
                 .setLngLat([lng, lat])
                 .addTo(map);
 
-            // Add a right-click event listener to delete the pin with confirmation
-            pinElement.addEventListener("contextmenu", function (event) {
-                event.preventDefault(); // Prevent the default context menu
+            // Add a click event listener to the pin container
+            pinContainer.addEventListener("click", function (event) {
+                event.preventDefault();
                 showConfirmationModal(function (confirmed) {
                     if (confirmed) {
-                        deletePin(pinElement, { lng, lat });
+                        deletePin(pinContainer, { lng, lat });
                     }
                 });
             });
 
-            return pinElement;
+            return pinContainer;
         }
 
         const mapContainer = document.getElementById("map");
@@ -361,14 +380,14 @@
             if (savedPins) {
                 droppedPins = JSON.parse(savedPins);
                 droppedPins.forEach(function (pin) {
-                    const pinElement = createPinElement(pin.lngLat[0], pin.lngLat[1]);
+                    const pinContainer = createPinElement(pin.lngLat[0], pin.lngLat[1]);
 
-                    // Add a right-click event listener to delete the pin with confirmation
-                    pinElement.addEventListener("click", function (event) {
+                    // Add a click event listener to the pin container
+                    pinContainer.addEventListener("click", function (event) {
                         event.preventDefault(); // Prevent the default context menu
                         showConfirmationModal(function (confirmed) {
                             if (confirmed) {
-                                deletePin(pinElement, { lng: pin.lngLat[0], lat: pin.lngLat[1] });
+                                deletePin(pinContainer, { lng: pin.lngLat[0], lat: pin.lngLat[1] });
                             }
                         });
                     });
@@ -377,9 +396,9 @@
         }
 
         // Function to delete a pin from the map and local storage
-        function deletePin(pinElement, { lng, lat }) {
+        function deletePin(pinContainer, { lng, lat }) {
             // Remove the pin from the map
-            pinElement.parentNode.removeChild(pinElement);
+            pinContainer.parentNode.removeChild(pinContainer);
 
             // Remove the pin from the droppedPins array
             const index = droppedPins.findIndex(pin => pin.lngLat[0] === lng && pin.lngLat[1] === lat);
