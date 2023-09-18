@@ -220,6 +220,8 @@
         #title {
             font-size: 24px; /* Adjust the font size for mobile */
         }
+
+        
     </style>
 </head>
 <body>
@@ -365,17 +367,27 @@
             const uploadedPhotoPreview = document.createElement("img");
             uploadedPhotoPreview.id = `uploaded-photo-preview-${pinNumber}`;
             uploadedPhotoPreview.src = "";
-            uploadedPhotoPreview.alt = "Uploaded Photo Preview";
+
             uploadedPhotoPreview.style.maxWidth = "100%";
             uploadedPhotoPreview.style.maxHeight = "200px";
             modalContent.appendChild(uploadedPhotoPreview);
 
             // Create and add the file input
             const fileInput = document.createElement("input");
-            fileInput.type = "file";
-            fileInput.className = "upload-photo";
-            fileInput.accept = "image/*";
-            modalContent.appendChild(fileInput);
+fileInput.type = "file";
+fileInput.className = "upload-photo";
+fileInput.accept = "image/*";
+fileInput.style.marginLeft = "60px"; // Adjust the margin-left as needed
+modalContent.appendChild(fileInput);
+
+// Create and add the textarea for notes
+const notesTextarea = document.createElement("textarea");
+            notesTextarea.id = `notes-textarea-${pinNumber}`;
+            notesTextarea.placeholder = "Add notes here...";
+            notesTextarea.style.width = "100%";
+            notesTextarea.style.height = "100px"; // Adjust the height as needed
+            notesTextarea.style.resize = "none"; // Prevent textarea from being resized by users
+            modalContent.appendChild(notesTextarea);
 
             // Create and add the delete confirmation message
             const deleteMessage = document.createElement("p");
