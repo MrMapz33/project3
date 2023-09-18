@@ -99,6 +99,45 @@
             cursor: pointer;
         }
 
+        /* Add CSS for the modal container */
+        .modal-container {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Add CSS for the modal content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 35% auto;
+            padding: 20px;
+            border: 3px solid rgb(111, 108, 106); /* Orange border color */
+            width: 75%; /* Increase the modal width as needed */
+            text-align: center;
+            position: relative; /* Relative positioning for the close button */
+        }
+
+        /* Style for the close button */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #333; /* Close button color */
+        }
+
+        /* Style for the file input */
+        .upload-photo {
+            margin-top: 30px;
+        }
+
+        /* Adjust styles for mobile devices here */
         @media (max-width: 768px) {
             /* Adjust styles for mobile devices here */
             #company-logo {
@@ -145,6 +184,7 @@
                 min-height: 300px; /* Adjust this value as needed */
             }
         }
+
         /* Adjust styles for mobile landscape devices here */
         @media (max-width: 1024px) and (orientation: landscape) {
             #company-logo {
@@ -180,55 +220,6 @@
         #title {
             font-size: 24px; /* Adjust the font size for mobile */
         }
-
-       /* Style for the custom modal confirmation dialog */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 35% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 75%; /* Increase the modal width as needed */
-    text-align: center;
-    position: relative; /* Relative positioning for the close button */
-}
-
-.modal-content p {
-    font-size: 20px;
-    margin-bottom: 20px;
-}
-
-.modal-content button {
-    font-size: 16px;
-    padding: 10px 20px;
-    margin: 30px;
-    cursor: pointer;
-}
-
-/* Style for the close button */
-.close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
-    cursor: pointer;
-    color: #333; /* Close button color */
-}
-
-/* Style for the file input */
-#upload-photo {
-    margin-top: 30px;
-}
     </style>
 </head>
 <body>
@@ -240,9 +231,6 @@
         />
     </div>
 
-    
-
-    </div>
     <img id="company-logo" src="Logo.png" alt="Company Logo"> <!-- Add your logo image URL and alt text -->
     <div id="map"></div>
     <div id="title">Track What You Pack</div> <!-- Add the orange title at the bottom left of the page -->
@@ -250,22 +238,6 @@
 
     <!-- Draggable Image -->
     <img class="draggable-image" src="Pin.png" alt="Draggable Image" draggable="true" id="draggable-image" style="left: 10px; bottom: 50px;">
-
-    <!-- Add the custom modal dialog HTML -->
-    <div id="confirmation-modal" class="modal">
-        <div class="modal-content">
-            <span id="close-modal" class="close-button">&times;</span>
-    
-            <!-- Display the uploaded photo here -->
-            <img id="uploaded-photo-preview" src="" alt="Uploaded Photo Preview" style="max-width: 100%; max-height: 200px;">
-            <input type="file" id="upload-photo" accept="image/*">
-            <p>Do you want to delete this?</p>
-            <button id="confirm-delete">Yes</button>
-            
-        </div>
-
-        
-    </div>
 
     <script>
         // Your Mapbox Access Token
@@ -305,54 +277,45 @@
         // Define an array to store the dropped pins and their coordinates
         var droppedPins = [];
 
-        // Function to show the custom modal dialog
-        function showConfirmationModal(callback) {
-    const modal = document.getElementById("confirmation-modal");
-    modal.style.display = "block";
+        // Function to show the custom modal dialog for a specific pin
+        function showConfirmationModal(pinNumber) {
+            const modalId = `confirmation-modal-${pinNumber}`;
+            const modal = document.getElementById(modalId);
+            modal.style.display = "block";
 
-    // Handle the close button click
-    document.getElementById("close-modal").addEventListener("click", function () {
-        modal.style.display = "none";
-        callback(false); // Callback with "false" to cancel the action
-    });
+            // Handle the close button click
+            modal.querySelector(".close-button").addEventListener("click", function () {
+                modal.style.display = "none";
+            });
 
-    // Handle the "Yes" button click
-    document.getElementById("confirm-delete").addEventListener("click", function () {
-        modal.style.display = "none";
-        callback(true); // Callback with "true" to confirm the action
-    });
+            // Handle the file input change
+            const fileInput = modal.querySelector(".upload-photo");
+            const uploadedPhotoPreview = modal.querySelector(`#uploaded-photo-preview-${pinNumber}`);
+            fileInput.addEventListener("change", function (event) {
+                const selectedFile = fileInput.files[0];
+                if (selectedFile) {
+                    // Display the uploaded photo in the preview area
+                    const reader = new FileReader();
+                    reader.onload = function () {
+                        uploadedPhotoPreview.src = reader.result;
+                    };
+                    reader.readAsDataURL(selectedFile);
+                    // Disable the file input to prevent further uploads
+                    fileInput.disabled = true;
+                }
+            });
 
-    // Handle the "No" button click
-    document.getElementById("cancel-delete").addEventListener("click", function () {
-        modal.style.display = "none";
-        callback(false); // Callback with "false" to cancel the action
-    });
-}
-
-// Function to handle file input change
-document.getElementById("upload-photo").addEventListener("change", function (event) {
-        const fileInput = event.target;
-        const selectedFile = fileInput.files[0];
-
-        if (selectedFile) {
-            // Display the uploaded photo in the preview area
-            const uploadedPhotoPreview = document.getElementById("uploaded-photo-preview");
-
-            // Read the selected file as a data URL and set it as the preview image's src
-            const reader = new FileReader();
-            reader.onload = function () {
-                uploadedPhotoPreview.src = reader.result;
-            };
-            reader.readAsDataURL(selectedFile);
-
-            // Disable the file input to prevent further uploads
-            fileInput.disabled = true;
+            // Handle the "Yes" button click
+            modal.querySelector(".confirm-delete").addEventListener("click", function () {
+                modal.style.display = "none";
+                // Get the pin number from the button's data attribute
+                const pinToDelete = parseInt(this.getAttribute("data-pin"));
+                deletePin(pinToDelete);
+            });
         }
-    });
-
 
         // Function to create a new pin element
-        function createPinElement(lng, lat) {
+        function createPinElement(lng, lat, pinNumber) {
             // Create a pin container div
             const pinContainer = document.createElement("div");
             pinContainer.className = "pin-container";
@@ -377,46 +340,89 @@ document.getElementById("upload-photo").addEventListener("change", function (eve
                 .addTo(map);
 
             // Add a click event listener to the pin container
-            pinContainer.addEventListener("click", function (event) {
-                event.preventDefault();
-                showConfirmationModal(function (confirmed) {
-                    if (confirmed) {
-                        deletePin(pinContainer, { lng, lat });
-                    }
-                });
+            pinContainer.addEventListener("click", function () {
+                showConfirmationModal(pinNumber);
             });
+
+            // Create a modal container for the pin
+            const modalId = `confirmation-modal-${pinNumber}`;
+            const modalContainer = document.createElement("div");
+            modalContainer.id = modalId;
+            modalContainer.className = "modal-container";
+
+            // Create the modal content
+            const modalContent = document.createElement("div");
+            modalContent.className = "modal-content";
+            
+            // Create and add the close button
+            const closeButton = document.createElement("span");
+            closeButton.className = "close-button";
+            closeButton.setAttribute("data-modal", modalId);
+            closeButton.innerHTML = "&times;";
+            modalContent.appendChild(closeButton);
+
+            // Create and add the uploaded photo preview
+            const uploadedPhotoPreview = document.createElement("img");
+            uploadedPhotoPreview.id = `uploaded-photo-preview-${pinNumber}`;
+            uploadedPhotoPreview.src = "";
+            uploadedPhotoPreview.alt = "Uploaded Photo Preview";
+            uploadedPhotoPreview.style.maxWidth = "100%";
+            uploadedPhotoPreview.style.maxHeight = "200px";
+            modalContent.appendChild(uploadedPhotoPreview);
+
+            // Create and add the file input
+            const fileInput = document.createElement("input");
+            fileInput.type = "file";
+            fileInput.className = "upload-photo";
+            fileInput.accept = "image/*";
+            modalContent.appendChild(fileInput);
+
+            // Create and add the delete confirmation message
+            const deleteMessage = document.createElement("p");
+            deleteMessage.textContent = "Do you want to delete this?";
+            modalContent.appendChild(deleteMessage);
+
+            // Create and add the "Yes" button
+            const confirmDeleteButton = document.createElement("button");
+            confirmDeleteButton.className = "confirm-delete";
+            confirmDeleteButton.setAttribute("data-pin", pinNumber);
+            confirmDeleteButton.textContent = "Yes";
+            modalContent.appendChild(confirmDeleteButton);
+
+            // Append modal content to modal container
+            modalContainer.appendChild(modalContent);
+
+            // Append modal container to the body
+            document.body.appendChild(modalContainer);
 
             return pinContainer;
         }
 
-        const mapContainer = document.getElementById("map");
+        // Function to delete a pin from the map and local storage
+        function deletePin(pinNumber) {
+            // Remove the pin from the map
+            map.removeLayer(`pin-${pinNumber}`);
 
-        mapContainer.addEventListener("dragover", (event) => {
-            // Prevent the default behavior to allow a drop
-            event.preventDefault();
-        });
+            // Remove the pin from the droppedPins array
+            const index = droppedPins.findIndex(pin => pin.number === pinNumber);
+            if (index !== -1) {
+                droppedPins.splice(index, 1);
+            }
 
-        mapContainer.addEventListener("drop", (event) => {
-            // Prevent the default behavior (preventing the page from redirecting)
-            event.preventDefault();
-
-            // Calculate the geographic coordinates of the drop location
-            const lngLat = map.unproject([event.clientX, event.clientY]);
-
-            // Create a new pin object to store the pin and its coordinates
-            const newPin = {
-                lngLat: [lngLat.lng, lngLat.lat]
-            };
-
-            // Append the new pin to the droppedPins array
-            droppedPins.push(newPin);
-
-            // Create and add the pin element to the map
-            createPinElement(lngLat.lng, lngLat.lat);
-
-            // Save the droppedPins array to local storage
+            // Save the updated droppedPins array to local storage
             savePinsToLocalStorage();
-        });
+
+            // Clear the uploaded photo preview
+            const uploadedPhotoPreview = document.querySelector(`#uploaded-photo-preview-${pinNumber}`);
+            uploadedPhotoPreview.src = "";
+
+            // Remove the modal container from the DOM
+            const modalId = `confirmation-modal-${pinNumber}`;
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.remove();
+            }
+        }
 
         // Function to set local storage with dropped pins
         function savePinsToLocalStorage() {
@@ -429,42 +435,13 @@ document.getElementById("upload-photo").addEventListener("change", function (eve
             if (savedPins) {
                 droppedPins = JSON.parse(savedPins);
                 droppedPins.forEach(function (pin) {
-                    const pinContainer = createPinElement(pin.lngLat[0], pin.lngLat[1]);
-
-                    // Add a click event listener to the pin container
-                    pinContainer.addEventListener("click", function (event) {
-                        event.preventDefault(); // Prevent the default context menu
-                        showConfirmationModal(function (confirmed) {
-                            if (confirmed) {
-                                deletePin(pinContainer, { lng: pin.lngLat[0], lat: pin.lngLat[1] });
-                            }
-                        });
-                    });
+                    createPinElement(pin.lngLat[0], pin.lngLat[1], pin.number);
                 });
             }
         }
 
-        // Function to delete a pin from the map and local storage
-        function deletePin(pinContainer, { lng, lat }) {
-            // Remove the pin from the map
-            pinContainer.parentNode.removeChild(pinContainer);
-
-            // Remove the pin from the droppedPins array
-            const index = droppedPins.findIndex(pin => pin.lngLat[0] === lng && pin.lngLat[1] === lat);
-            if (index !== -1) {
-                droppedPins.splice(index, 1);
-            }
-
-            // Save the updated droppedPins array to local storage
-            savePinsToLocalStorage();
-        }
-
-        // Load pins from local storage on page load
-        loadPinsFromLocalStorage();
-
         // Touch event listeners for draggable image
         const draggableImage = document.getElementById("draggable-image");
-
         let offsetX, offsetY;
 
         // Function to handle touch start event
@@ -495,21 +472,22 @@ document.getElementById("upload-photo").addEventListener("change", function (eve
 
             // Create a new pin object to store the pin and its coordinates
             const newPin = {
-                lngLat: [lngLat.lng, lngLat.lat]
+                lngLat: [lngLat.lng, lngLat.lat],
+                number: droppedPins.length + 1 // Assign a unique number to the pin
             };
 
             // Append the new pin to the droppedPins array
             droppedPins.push(newPin);
 
             // Create and add the pin element to the map
-            createPinElement(lngLat.lng, lngLat.lat);
+            const pinElement = createPinElement(lngLat.lng, lngLat.lat, newPin.number);
 
             // Save the droppedPins array to local storage
             savePinsToLocalStorage();
 
             // Reset the draggable image's position
-            draggableImage.style.left = "100px";
-            draggableImage.style.top = "500px";
+            draggableImage.style.left = "10px";
+            draggableImage.style.top = "50px";
         }
 
         // Add touch event listeners to the draggable image
@@ -517,6 +495,8 @@ document.getElementById("upload-photo").addEventListener("change", function (eve
         draggableImage.addEventListener("touchmove", onTouchMove);
         draggableImage.addEventListener("touchend", onTouchEnd);
 
+        // Load dropped pins from local storage
+        loadPinsFromLocalStorage();
     </script>
 </body>
 </html>
