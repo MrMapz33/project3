@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track What You Pack</title>
+    <title>TEST</title>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
     <!-- Include the "SignPainter" font from Google Fonts -->
@@ -243,6 +243,8 @@
     <div id="title">Track What You Pack</div> <!-- Add the orange title at the bottom left of the page -->
     <img id="bottom-right-image" src="Puffer.png" alt="Image"> <!-- Add your image URL and alt text -->
 
+    
+
     <!-- Draggable Image -->
     <img class="draggable-image" src="Pin.png" alt="Draggable Image" draggable="true" id="draggable-image" style="left: 10px; bottom: 50px;">
 
@@ -396,6 +398,19 @@ const notesTextarea = document.createElement("textarea");
             notesTextarea.style.marginBottom = "0px"; // Add margin to the top of the textarea
             modalContent.appendChild(notesTextarea);
 
+            // Load notes content from local storage, if available
+    const savedNotes = localStorage.getItem(`pinNotes-${pinNumber}`);
+    if (savedNotes) {
+        notesTextarea.value = savedNotes;
+    }
+     // Add a change event listener to save notes content to local storage
+     notesTextarea.addEventListener("change", function () {
+        const notesContent = this.value;
+        localStorage.setItem(`pinNotes-${pinNumber}`, notesContent);
+    });
+
+    modalContent.appendChild(notesTextarea);
+
             // Create and add the delete confirmation message
             const deleteMessage = document.createElement("p");
             deleteMessage.textContent = "Do you want to delete this?";
@@ -408,6 +423,8 @@ const notesTextarea = document.createElement("textarea");
             confirmDeleteButton.textContent = "Yes";
             modalContent.appendChild(confirmDeleteButton);
 
+
+            
             // Append modal content to modal container
             modalContainer.appendChild(modalContent);
 
@@ -421,12 +438,16 @@ const notesTextarea = document.createElement("textarea");
         function deletePin(pinNumber) {
             // Remove the pin from the map
             map.removeLayer(`pin-${pinNumber}`);
+            
 
             // Remove the pin from the droppedPins array
             const index = droppedPins.findIndex(pin => pin.number === pinNumber);
             if (index !== -1) {
                 droppedPins.splice(index, 1);
             }
+
+             // Remove the notes content from local storage
+    localStorage.removeItem(`pinNotes-${pinNumber}`);
 
             // Save the updated droppedPins array to local storage
             savePinsToLocalStorage();
@@ -441,6 +462,18 @@ const notesTextarea = document.createElement("textarea");
             if (modal) {
                 modal.remove();
             }
+            // Remove the pin container from the DOM
+    const pinContainer = document.getElementById(`pin-${pinNumber}`);
+    if (pinContainer) {
+        pinContainer.remove();
+    }
+
+     // Remove the pin.png image element from the map
+     const pinImage = document.querySelector(`img[src="Pin.png"]`);
+    if (pinImage) {
+        pinImage.remove();
+    }
+
         }
 
         // Function to set local storage with dropped pins
