@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEST</title>
+    <title>Track What You Pack</title>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
     <!-- Include the "SignPainter" font from Google Fonts -->
@@ -238,12 +238,24 @@
         />
     </div>
 
+    <div id="permanent-pin-modal" class="modal-container">
+        <!-- Permanent Pin Modal Content -->
+        <div class="modal-content">
+            <!-- Close Button for Permanent Pin Modal -->
+            <span class="close-button" data-modal="permanent-pin-modal">&times;</span>
+            
+            <!-- Uploaded Photo Preview for Permanent Pin -->
+            <img id="permanent-pin-photo-preview" src="IMG_3099.jpeg" style="max-width: 100%; max-height: 200px;">
+            <!-- Notes Textarea for Permanent Pin -->
+        <textarea id="permanent-pin-notes" placeholder="There's no place like home" style="width: 75%; height: 75px; resize: none; margin-top: 10px;"></textarea>
+    </div>
+        </div>
+    </div>
+
     <img id="company-logo" src="Logo.png" alt="Company Logo"> <!-- Add your logo image URL and alt text -->
     <div id="map"></div>
     <div id="title">Track What You Pack</div> <!-- Add the orange title at the bottom left of the page -->
     <img id="bottom-right-image" src="Puffer.png" alt="Image"> <!-- Add your image URL and alt text -->
-
-    
 
     <!-- Draggable Image -->
     <img class="draggable-image" src="Pin.png" alt="Draggable Image" draggable="true" id="draggable-image" style="left: 10px; bottom: 50px;">
@@ -398,7 +410,7 @@ const notesTextarea = document.createElement("textarea");
             notesTextarea.style.marginBottom = "0px"; // Add margin to the top of the textarea
             modalContent.appendChild(notesTextarea);
 
-            // Load notes content from local storage, if available
+             // Load notes content from local storage, if available
     const savedNotes = localStorage.getItem(`pinNotes-${pinNumber}`);
     if (savedNotes) {
         notesTextarea.value = savedNotes;
@@ -408,8 +420,6 @@ const notesTextarea = document.createElement("textarea");
         const notesContent = this.value;
         localStorage.setItem(`pinNotes-${pinNumber}`, notesContent);
     });
-
-    modalContent.appendChild(notesTextarea);
 
             // Create and add the delete confirmation message
             const deleteMessage = document.createElement("p");
@@ -423,8 +433,6 @@ const notesTextarea = document.createElement("textarea");
             confirmDeleteButton.textContent = "Yes";
             modalContent.appendChild(confirmDeleteButton);
 
-
-            
             // Append modal content to modal container
             modalContainer.appendChild(modalContent);
 
@@ -438,16 +446,12 @@ const notesTextarea = document.createElement("textarea");
         function deletePin(pinNumber) {
             // Remove the pin from the map
             map.removeLayer(`pin-${pinNumber}`);
-            
 
             // Remove the pin from the droppedPins array
             const index = droppedPins.findIndex(pin => pin.number === pinNumber);
             if (index !== -1) {
                 droppedPins.splice(index, 1);
             }
-
-             // Remove the notes content from local storage
-    localStorage.removeItem(`pinNotes-${pinNumber}`);
 
             // Save the updated droppedPins array to local storage
             savePinsToLocalStorage();
@@ -462,18 +466,6 @@ const notesTextarea = document.createElement("textarea");
             if (modal) {
                 modal.remove();
             }
-            // Remove the pin container from the DOM
-    const pinContainer = document.getElementById(`pin-${pinNumber}`);
-    if (pinContainer) {
-        pinContainer.remove();
-    }
-
-     // Remove the pin.png image element from the map
-     const pinImage = document.querySelector(`img[src="Pin.png"]`);
-    if (pinImage) {
-        pinImage.remove();
-    }
-
         }
 
         // Function to set local storage with dropped pins
@@ -549,6 +541,48 @@ const notesTextarea = document.createElement("textarea");
 
         // Load dropped pins from local storage
         loadPinsFromLocalStorage();
+
+        // Create a permanent pin on the map at specific coordinates
+        const permanentPin = new mapboxgl.Marker()
+            .setLngLat([-123, 44]) // Specify the coordinates (longitude and latitude) of the permanent pin
+            .addTo(map);
+
+     // Function to show the custom modal dialog for the permanent pin
+function showPermanentPinModal() {
+    const modal = document.getElementById("permanent-pin-modal");
+    modal.style.display = "block";
+
+    // Handle the close button click
+    modal.querySelector(".close-button").addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+    // Handle the file input change
+    const fileInput = modal.querySelector(".upload-photo");
+    const uploadedPhotoPreview = document.getElementById("permanent-pin-photo-preview");
+    fileInput.addEventListener("change", function (event) {
+        const selectedFile = fileInput.files[0];
+        if (selectedFile) {
+            // Display the uploaded photo in the preview area
+            const reader = new FileReader();
+            reader.onload = function () {
+                uploadedPhotoPreview.src = reader.result;
+            };
+            reader.readAsDataURL(selectedFile);
+            // Disable the file input to prevent further uploads
+            fileInput.disabled = true;
+        }
+    });
+
+
+}
+
+// Add a click event listener to the permanent pin
+permanentPin.getElement().addEventListener("click", function () {
+    showPermanentPinModal();
+});
+
+
     </script>
 </body>
 </html>
