@@ -228,7 +228,23 @@
             font-size: 24px; /* Adjust the font size for mobile */
         }
 
+
+        #prairie-creek-pin-notes::placeholder {
+    color: black; /* Change this color to your desired color */
+}
         
+#serendipity3-pin-notes::placeholder {
+    color: black; /* Change this color to your desired color */
+}
+
+#santa-fe-pin-notes::placeholder {
+    color: black; /* Change this color to your desired color */
+}
+        
+#td-garden-pin-notes::placeholder {
+    color: black; /* Change this color to your desired color */
+}
+
     </style>
 </head>
 <body>
@@ -254,17 +270,17 @@
         </div>
     </div>
 
-    <div id="prairie-creek-modal" class="modal-container">
-        <!-- Prairie Creek Modal Content -->
+    <div id="prairie-creek-pin-modal" class="modal-container">
+        <!-- Prairie Creek Permanent Pin Modal Content -->
         <div class="modal-content">
-            <!-- Close Button for Prairie Creek Modal -->
-            <span class="close-button" data-modal="prairie-creek-modal">&times;</span>
+            <!-- Close Button for Prairie Creek Permanent Pin Modal -->
+            <span class="close-button" data-modal="prairie-creek-pin-modal">&times;</span>
             
-            <!-- Video Player for Prairie Creek Permanent Pin -->
-            <video controls id="prairie-creek-video" style="max-width: 100%; max-height: 300px;">
-                <source src="Ferns.MP4" type="video/mp4">
-                
-            </video>
+            <!-- Image Display for Prairie Creek Permanent Pin -->
+            <img id="prairie-creek-image" src="Canyon.jpg" style="max-width: 100%; max-height: 300px;">
+    
+            <!-- Notes Textarea for Prairie Creek Permanent Pin -->
+            <textarea id="prairie-creek-pin-notes" placeholder="2019 Trip to Fern Canyon" style="width: 75%; height: 75px; resize: none; margin-top: 10px;"></textarea>
         </div>
     </div>
 
@@ -643,18 +659,47 @@ permanentPin.getElement().addEventListener("click", function () {
 });
 
 
+// Create a permanent pin at Prairie Creek State Park
 const prairieCreekPin = new mapboxgl.Marker()
     .setLngLat([-124.017311, 41.330470]) // Coordinates for Prairie Creek State Park
     .addTo(map);
 
-    // Function to show the custom modal dialog for Prairie Creek Permanent Pin
+// Function to show the custom modal dialog for the Prairie Creek permanent pin
 function showPrairieCreekModal() {
-    const modal = document.getElementById("prairie-creek-modal");
+    const modal = document.getElementById("prairie-creek-pin-modal");
     modal.style.display = "block";
 
     // Handle the close button click
     modal.querySelector(".close-button").addEventListener("click", function () {
         modal.style.display = "none";
+    });
+
+    // Handle the file input change for the image
+    const fileInput = modal.querySelector(".upload-image");
+    const imageDisplay = document.getElementById("prairie-creek-image");
+    fileInput.addEventListener("change", function (event) {
+        const selectedFile = fileInput.files[0];
+        if (selectedFile) {
+            // Display the uploaded image
+            imageDisplay.src = URL.createObjectURL(selectedFile);
+            // Disable the file input to prevent further uploads
+            fileInput.disabled = true;
+        }
+    });
+
+    // Handle notes textarea
+    const notesTextarea = document.getElementById("prairie-creek-pin-notes");
+
+    // Load notes content from local storage, if available
+    const savedNotes = localStorage.getItem("prairieCreekPinNotes");
+    if (savedNotes) {
+        notesTextarea.value = savedNotes;
+    }
+
+    // Add a change event listener to save notes content to local storage
+    notesTextarea.addEventListener("change", function () {
+        const notesContent = this.value;
+        localStorage.setItem("prairieCreekPinNotes", notesContent);
     });
 }
 
@@ -662,6 +707,7 @@ function showPrairieCreekModal() {
 prairieCreekPin.getElement().addEventListener("click", function () {
     showPrairieCreekModal();
 });
+
 
 // Create a permanent pin in Santa Fe, NM
 const santaFePin = new mapboxgl.Marker()
