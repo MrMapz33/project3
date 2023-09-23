@@ -126,14 +126,16 @@
         }
 
         /* Style for the close button */
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 20px;
-            cursor: pointer;
-            color: #333; /* Close button color */
-        }
+       /* Style for the close button */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    color: white; /* Close button color */
+    z-index: 2; /* Adjust the z-index value to make it highest */
+}
 
         /* Style for the file input */
         .upload-photo {
@@ -249,6 +251,64 @@
             <!-- Notes Textarea for Permanent Pin -->
         <textarea id="permanent-pin-notes" placeholder="There's no place like home" style="width: 75%; height: 75px; resize: none; margin-top: 10px;"></textarea>
     </div>
+        </div>
+    </div>
+
+    <div id="prairie-creek-modal" class="modal-container">
+        <!-- Prairie Creek Modal Content -->
+        <div class="modal-content">
+            <!-- Close Button for Prairie Creek Modal -->
+            <span class="close-button" data-modal="prairie-creek-modal">&times;</span>
+            
+            <!-- Video Player for Prairie Creek Permanent Pin -->
+            <video controls id="prairie-creek-video" style="max-width: 100%; max-height: 300px;">
+                <source src="Ferns.MP4" type="video/mp4">
+                
+            </video>
+        </div>
+    </div>
+
+    <div id="santa-fe-pin-modal" class="modal-container">
+        <!-- Santa Fe Permanent Pin Modal Content -->
+        <div class="modal-content">
+            <!-- Close Button for Santa Fe Permanent Pin Modal -->
+            <span class="close-button" data-modal="santa-fe-pin-modal">&times;</span>
+            
+            <!-- Uploaded Photo Preview for Santa Fe Permanent Pin -->
+            <img id="santa-fe-pin-photo-preview" src="Peppers.jpeg" style="max-width: 100%; max-height: 200px;">
+    
+            <!-- Notes Textarea for Santa Fe Permanent Pin -->
+            <textarea id="santa-fe-pin-notes" placeholder="Seasons Greetings from Santa Fe!" style="width: 75%; height: 75px; resize: none; margin-top: 10px;"></textarea>
+        </div>
+    </div>
+
+    <div id="serendipity3-pin-modal" class="modal-container">
+        <!-- Serendipity 3 Permanent Pin Modal Content -->
+        <div class="modal-content">
+            <!-- Close Button for Serendipity 3 Permanent Pin Modal -->
+            <span class="close-button" data-modal="serendipity3-pin-modal">&times;</span>
+            
+            <!-- Uploaded Photo Preview for Serendipity 3 Permanent Pin -->
+            <img id="serendipity3-pin-photo-preview" src="xmas.jpeg" style="max-width: 100%; max-height: 200px;">
+    
+            <!-- Notes Textarea for Serendipity 3 Permanent Pin -->
+            <textarea id="serendipity3-pin-notes" placeholder="Sweetheart :)" style="width: 75%; height: 75px; resize: none; margin-top: 10px;"></textarea>
+        </div>
+    </div>
+    
+    <div id="td-garden-pin-modal" class="modal-container">
+        <!-- TD Garden Permanent Pin Modal Content -->
+        <div class="modal-content">
+            <!-- Close Button for TD Garden Permanent Pin Modal -->
+            <span class="close-button" data-modal="td-garden-pin-modal">&times;</span>
+            
+            <!-- Video Player for TD Garden Permanent Pin -->
+            <video controls id="td-garden-video" style="max-width: 100%; max-height: 300px;">
+                <source src="celtics.mp4" type="video/mp4">
+            </video>
+    
+            <!-- Notes Textarea for TD Garden Permanent Pin -->
+            <textarea id="td-garden-pin-notes" placeholder="Add notes here..." style="width: 75%; height: 75px; resize: none; margin-top: 10px;"></textarea>
         </div>
     </div>
 
@@ -582,6 +642,182 @@ permanentPin.getElement().addEventListener("click", function () {
     showPermanentPinModal();
 });
 
+
+const prairieCreekPin = new mapboxgl.Marker()
+    .setLngLat([-124.017311, 41.330470]) // Coordinates for Prairie Creek State Park
+    .addTo(map);
+
+    // Function to show the custom modal dialog for Prairie Creek Permanent Pin
+function showPrairieCreekModal() {
+    const modal = document.getElementById("prairie-creek-modal");
+    modal.style.display = "block";
+
+    // Handle the close button click
+    modal.querySelector(".close-button").addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+}
+
+// Add a click event listener to the Prairie Creek permanent pin
+prairieCreekPin.getElement().addEventListener("click", function () {
+    showPrairieCreekModal();
+});
+
+// Create a permanent pin in Santa Fe, NM
+const santaFePin = new mapboxgl.Marker()
+    .setLngLat([-105.937799, 35.686975]) // Specify the coordinates (longitude and latitude) of the Santa Fe pin
+    .addTo(map);
+
+// Function to show the custom modal dialog for the Santa Fe permanent pin
+function showSantaFePinModal() {
+    const modal = document.getElementById("santa-fe-pin-modal");
+    modal.style.display = "block";
+
+    // Handle the close button click
+    modal.querySelector(".close-button").addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+    // Handle the file input change
+    const fileInput = modal.querySelector(".upload-photo");
+    const uploadedPhotoPreview = document.getElementById("santa-fe-pin-photo-preview");
+    fileInput.addEventListener("change", function (event) {
+        const selectedFile = fileInput.files[0];
+        if (selectedFile) {
+            // Display the uploaded photo in the preview area
+            const reader = new FileReader();
+            reader.onload = function () {
+                uploadedPhotoPreview.src = reader.result;
+            };
+            reader.readAsDataURL(selectedFile);
+            // Disable the file input to prevent further uploads
+            fileInput.disabled = true;
+        }
+    });
+
+    // Handle notes textarea
+    const notesTextarea = document.getElementById("santa-fe-pin-notes");
+
+    // Load notes content from local storage, if available
+    const savedNotes = localStorage.getItem("santaFePinNotes");
+    if (savedNotes) {
+        notesTextarea.value = savedNotes;
+    }
+
+    // Add a change event listener to save notes content to local storage
+    notesTextarea.addEventListener("change", function () {
+        const notesContent = this.value;
+        localStorage.setItem("santaFePinNotes", notesContent);
+    });
+}
+
+// Add a click event listener to the Santa Fe permanent pin
+santaFePin.getElement().addEventListener("click", function () {
+    showSantaFePinModal();
+});
+
+// Create a permanent pin at Serendipity 3 in Manhattan
+const serendipity3Pin = new mapboxgl.Marker()
+    .setLngLat([-73.961840, 40.761175]) // Specify the coordinates (longitude and latitude) of Serendipity 3
+    .addTo(map);
+
+// Function to show the custom modal dialog for the Serendipity 3 permanent pin
+function showSerendipity3PinModal() {
+    const modal = document.getElementById("serendipity3-pin-modal");
+    modal.style.display = "block";
+
+    // Handle the close button click
+    modal.querySelector(".close-button").addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+    // Handle the file input change
+    const fileInput = modal.querySelector(".upload-photo");
+    const uploadedPhotoPreview = document.getElementById("serendipity3-pin-photo-preview");
+    fileInput.addEventListener("change", function (event) {
+        const selectedFile = fileInput.files[0];
+        if (selectedFile) {
+            // Display the uploaded photo in the preview area
+            const reader = new FileReader();
+            reader.onload = function () {
+                uploadedPhotoPreview.src = reader.result;
+            };
+            reader.readAsDataURL(selectedFile);
+            // Disable the file input to prevent further uploads
+            fileInput.disabled = true;
+        }
+    });
+
+    // Handle notes textarea
+    const notesTextarea = document.getElementById("serendipity3-pin-notes");
+
+    // Load notes content from local storage, if available
+    const savedNotes = localStorage.getItem("serendipity3PinNotes");
+    if (savedNotes) {
+        notesTextarea.value = savedNotes;
+    }
+
+    // Add a change event listener to save notes content to local storage
+    notesTextarea.addEventListener("change", function () {
+        const notesContent = this.value;
+        localStorage.setItem("serendipity3PinNotes", notesContent);
+    });
+}
+
+// Add a click event listener to the Serendipity 3 permanent pin
+serendipity3Pin.getElement().addEventListener("click", function () {
+    showSerendipity3PinModal();
+});
+
+
+// Create a permanent pin at TD Garden in Boston
+const tdGardenPin = new mapboxgl.Marker()
+    .setLngLat([-71.060220, 42.366171]) // Specify the coordinates (longitude and latitude) of TD Garden
+    .addTo(map);
+
+// Function to show the custom modal dialog for the TD Garden permanent pin
+function showTdgardenPinModal() {
+    const modal = document.getElementById("td-garden-pin-modal");
+    modal.style.display = "block";
+
+    // Handle the close button click
+    modal.querySelector(".close-button").addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+    // Handle the file input change
+    const fileInput = modal.querySelector(".upload-video");
+    const videoPlayer = document.getElementById("td-garden-video");
+    fileInput.addEventListener("change", function (event) {
+        const selectedFile = fileInput.files[0];
+        if (selectedFile) {
+            // Display the uploaded video in the player
+            videoPlayer.src = URL.createObjectURL(selectedFile);
+            // Disable the file input to prevent further uploads
+            fileInput.disabled = true;
+        }
+    });
+
+    // Handle notes textarea
+    const notesTextarea = document.getElementById("td-garden-pin-notes");
+
+    // Load notes content from local storage, if available
+    const savedNotes = localStorage.getItem("tdGardenPinNotes");
+    if (savedNotes) {
+        notesTextarea.value = savedNotes;
+    }
+
+    // Add a change event listener to save notes content to local storage
+    notesTextarea.addEventListener("change", function () {
+        const notesContent = this.value;
+        localStorage.setItem("tdGardenPinNotes", notesContent);
+    });
+}
+
+// Add a click event listener to the TD Garden permanent pin
+tdGardenPin.getElement().addEventListener("click", function () {
+    showTdgardenPinModal();
+});
 
     </script>
 </body>
