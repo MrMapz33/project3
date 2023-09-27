@@ -35,10 +35,14 @@
             position: absolute;
             top: 50px; /* Adjust the top position as needed */
             left: 10px; /* Adjust the left position as needed */
+            right: 50; /* Adjust the right position to fill the container */
+            bottom: 50; /* Adjust the bottom position to fill the container */
             font-size: 35px; /* Adjust the font size as needed */
             color: yellow;
             z-index: 2;
             font-family: 'Amatic SC', cursive; /* Use the same font as the slogan */
+            cursor: pointer; /* Add a pointer cursor to indicate clickability */
+
         }
 
         /* Style for the map container to fill the whole page */
@@ -224,6 +228,15 @@
             font-size: 24px; /* Adjust the font size as needed */
             margin-top: 20px; /* Adjust the margin as needed */
         }
+        /* Style for the marker */
+        .marker {
+    width: 32px;
+    height: 32px;
+    background-image: url('dm pin 2.png'); /* Replace 'your-image.png' with your image path */
+    background-size: cover; /* Adjust this property as needed to fit the image */
+    border-radius: 50%; /* Makes the marker a circle */
+    border: 2px solid rgb(0, 0, 0); /* Add a white border for contrast */
+}
 
         /* Style for the "dm pin" image */
     </style>
@@ -248,7 +261,7 @@
     </div>
 
     <!-- Text next to the draggable image -->
-    <div id="draggable-text"> Tap Here to Drop a Pin!</div>
+    <div id="draggable-text" onclick="dropMarker()"> Tap Here to Drop a Pin!</div>
 
     <a href="https://www.drmartens.com/us/en/"> <!-- Add your link URL here -->
         <img id="company-logo" src="dm logo.png" alt="Company Logo"> <!-- Add your logo image URL and alt text -->
@@ -271,29 +284,6 @@
             zoom: 2 // Adjust the zoom level as needed
         });
 
-        // Function to handle the search functionality
-        document.getElementById("search").addEventListener("keypress", function (e) {
-            if (e.key === "Enter") {
-                var searchText = e.target.value;
-                geocode(searchText);
-            }
-        });
-
-        // Function to geocode a location and fit the map to it
-        function geocode(location) {
-            fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${location}.json?access_token=${mapboxgl.accessToken}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.features.length > 0) {
-                        var bbox = data.features[0].bbox; // Get the bounding box
-                        map.fitBounds(bbox, { padding: 50 }); // Fit the map to the bounding box with padding
-                    } else {
-                        alert("Location not found!");
-                    }
-                })
-                .catch(error => console.error(error));
-        }
-
         // Function to handle location tracking permission
         function requestLocationPermission() {
             var locationPrompt = document.getElementById("location-prompt");
@@ -307,7 +297,7 @@
                     function (error) {
                         // Location access denied or an error occurred
                         console.error("Location access denied:", error);
-                        locationPrompt.style.display = "block"; // Show the location prompt after loading screen animation completes
+                        locationPrompt.style.display = "block"; // Show the location prompt after the loading screen animation completes
                     }
                 );
             } else {
@@ -321,15 +311,51 @@
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(function (position) {
                     var coordinates = [position.coords.longitude, position.coords.latitude];
+
+                    // Create a marker element (a custom image)
+                    var marker = document.createElement('div');
+                    marker.className = 'marker';
+                    marker.style.backgroundImage = 'url(dm store pin.png)'; // Specify the marker image URL
                     
-                    // Create a marker and add it to the map
-                    new mapboxgl.Marker()
+                    // Set the size of the marker
+                    marker.style.width = '25px'; // Adjust the width of the marker
+                    marker.style.height = '25px'; // Adjust the height of the marker
+
+                    // Add the marker to the map
+                    new mapboxgl.Marker(marker)
                         .setLngLat(coordinates)
                         .addTo(map);
+
+                    // Store marker data in local storage
+                    var markerData = {
+                        coordinates: coordinates
+                    };
+                    var storedMarkers = JSON.parse(localStorage.getItem('markers') || '[]');
+                    storedMarkers.push(markerData);
+                    localStorage.setItem('markers', JSON.stringify(storedMarkers));
                 });
             } else {
                 console.error("Geolocation is not supported in this browser");
             }
+        }
+
+        // Function to load markers from local storage
+        function loadMarkers() {
+            var storedMarkers = JSON.parse(localStorage.getItem('markers') || '[]');
+            storedMarkers.forEach(function (markerData) {
+                var marker = document.createElement('div');
+                marker.className = 'marker';
+                marker.style.backgroundImage = 'url(dm store pin.png)'; // Specify the marker image URL
+                
+                // Set the size of the marker
+                marker.style.width = '25px'; // Adjust the width of the marker
+                marker.style.height = '25px'; // Adjust the height of the marker
+
+                // Add the marker to the map
+                new mapboxgl.Marker(marker)
+                    .setLngLat(markerData.coordinates)
+                    .addTo(map);
+            });
         }
 
         // Call the requestLocationPermission function after the loading screen animation completes
@@ -339,8 +365,9 @@
             setTimeout(function () {
                 loadingScreen.style.display = "none";
                 requestLocationPermission(); // Call the location permission function after loading screen animation completes
+                loadMarkers(); // Load markers from local storage
             }, 1000); // Delay should match the animation duration
         }, 1000); // Adjust the delay as needed
     </script>
-    </body>
+            </body>
 </html>
