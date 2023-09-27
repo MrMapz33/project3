@@ -9,7 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400&display=swap" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
-    <style>
+    
+   
+   <style>
         /* Set the background color of the webpage to black */
         body {
             background-color: black;
@@ -111,6 +113,14 @@
                 height: 100px;
             }
 
+            #bottom-left-image {
+                position: absolute;
+                bottom: 55px;
+                left: 10px;
+                width: 150px;
+                height: 50px;
+            }
+
             #search-container {
                 top: 10px;
                 left: 10px;
@@ -121,10 +131,25 @@
                 font-size: 14px;
             }
 
+             /* Style for the text next to the draggable image */
+        #draggable-text {
+            position: absolute;
+            top: 50px; /* Adjust the top position as needed */
+            left: 10px; /* Adjust the left position as needed */
+            right: 50; /* Adjust the right position to fill the container */
+            bottom: 50; /* Adjust the bottom position to fill the container */
+            font-size: 35px; /* Adjust the font size as needed */
+            color: yellow;
+            z-index: 2;
+            font-family: 'Amatic SC', cursive; /* Use the same font as the slogan */
+            cursor: pointer; /* Add a pointer cursor to indicate clickability */
+
+        }
             /* Adjust the font size for the slogan on mobile devices */
             #title {
                 position: absolute;
                 font-size: 36px; /* Adjust the font size for mobile */
+                bottom: 5px;
             }
 
             /* Ensure the map container has a minimum height on smaller screens */
@@ -153,11 +178,35 @@
                 width: 200px;
                 font-size: 14px;
             }
+
+            #bottom-left-image {
+                position: absolute;
+                bottom: 55px;
+                left: 10px;
+                width: 150px;
+                height: 50px;
+            }
+             /* Style for the text next to the draggable image */
+        #draggable-text {
+            position: absolute;
+            top: 55px; /* Adjust the top position as needed */
+            left: 18px; /* Adjust the left position as needed */
+            right: 50; /* Adjust the right position to fill the container */
+            bottom: 50; /* Adjust the bottom position to fill the container */
+            font-size: 35px; /* Adjust the font size as needed */
+            color: yellow;
+            z-index: 2;
+            font-family: 'Amatic SC', cursive; /* Use the same font as the slogan */
+            cursor: pointer; /* Add a pointer cursor to indicate clickability */
+
+        }
         }
 
         /* Adjust the font size for the slogan on mobile devices */
         #title {
-            font-size: 36px; /* Adjust the font size for mobile */
+            font-size: 36px;
+            left: -10px;
+            bottom: 5px; /* Adjust the font size for mobile */
         }
 
         /* Style for the loading screen */
@@ -268,10 +317,13 @@
     </a>
     <div id="map"></div>
     <div id="title">
-        <div id="WalkYourDocs">#WalkYourDocs</div>
+        <div id="WalkYourDocs">#DoItInDocs</div>
     </div>
     <img id="bottom-right-image" src="dm shoe.png" alt="Image"> <!-- Add your image URL and alt text -->
+    <img id="bottom-left-image" src="Social.png" alt="Image"> <!-- Add your image URL and alt text -->
 
+
+    
     <script>
         // Your Mapbox Access Token
         mapboxgl.accessToken = 'pk.eyJ1IjoibXJtYXB6MzMiLCJhIjoiY2xtanBmNzZ4MDU1MTJrbDhmb3FxeW51NSJ9.pAVI4jVRkjQAQcu0xCUYqA';
@@ -281,7 +333,7 @@
             container: 'map', // Specify the container ID
             style: 'mapbox://styles/mapbox/dark-v10', // Use the dark-v10 style for a black background
             center: [-99.3, 38], // Longitude and latitude of the initial map center (US center)
-            zoom: 2 // Adjust the zoom level as needed
+            zoom: 1.75 // Adjust the zoom level as needed
         });
 
         // Function to handle location tracking permission
@@ -368,6 +420,57 @@
                 loadMarkers(); // Load markers from local storage
             }, 1000); // Delay should match the animation duration
         }, 1000); // Adjust the delay as needed
+
+         // Function to handle search when the user presses Enter
+    function handleSearch() {
+        var searchInput = document.getElementById("search");
+        var query = searchInput.value.trim(); // Get the user's query and remove leading/trailing spaces
+
+        // Perform your search logic here, e.g., use the query to search for a location on the map
+        // You can use the Mapbox GL Geocoding API or your custom logic for searching locations
+
+        // For this example, we'll simply log the query to the console
+        console.log("Search Query:", query);
+    }
+
+    // Add an event listener to trigger the search function when Enter is pressed
+    var searchInput = document.getElementById("search");
+    searchInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            handleSearch();
+        }
+    });
+
+    function handleSearch() {
+    var searchInput = document.getElementById("search");
+    var query = searchInput.value.trim(); // Get the user's query and remove leading/trailing spaces
+
+    // Perform a geocoding lookup using Mapbox Geocoding API
+    fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=pk.eyJ1IjoibXJtYXB6MzMiLCJhIjoiY2xtanBmNzZ4MDU1MTJrbDhmb3FxeW51NSJ9.pAVI4jVRkjQAQcu0xCUYqA`)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            // Check if there are results from the geocoding query
+            if (data.features.length > 0) {
+                // Extract the coordinates of the first result
+                var coordinates = data.features[0].geometry.coordinates;
+
+                // Update the map's center and zoom to the searched location
+                map.flyTo({
+                    center: coordinates,
+                    zoom: 10, // You can adjust the zoom level as needed
+                });
+            } else {
+                // Handle the case when no results are found
+                console.log("No results found for the query:", query);
+            }
+        })
+        .catch(function (error) {
+            console.error("Error performing geocoding lookup:", error);
+        });
+}
+
     </script>
             </body>
 </html>
