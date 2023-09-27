@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,11 +8,8 @@
     <title>WalkYourDocs</title>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-
     <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400&display=swap" rel="stylesheet">
-
-
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400&display=swap" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
     <style>
         /* Set the background color of the webpage to black */
@@ -21,28 +20,28 @@
             overflow: hidden; /* Hide any potential scroll bars */
         }
 
-      /* Update the font-family property for the title */
-#title {
-    font-family: 'Amatic SC', cursive; /* Use Amatic SC font or fallback to cursive */
-    font-size: 80px;
-    margin: 20px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    z-index: 2;
-    color: yellow;
-}
+        /* Update the font-family property for the title */
+        #title {
+            font-family: 'Amatic SC', cursive; /* Use Amatic SC font or fallback to cursive */
+            font-size: 80px;
+            margin: 20px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 2;
+            color: yellow;
+        }
 
         /* Style for the text next to the draggable image */
         #draggable-text {
-    position: absolute;
-    top: 50px; /* Adjust the top position as needed */
-    left: 65px; /* Adjust the left position as needed */
-    font-size: 40px; /* Adjust the font size as needed */
-    color: yellow;
-    z-index: 2;
-    font-family: 'Amatic SC', cursive; /* Use the same font as the slogan */
-}
+            position: absolute;
+            top: 50px; /* Adjust the top position as needed */
+            left: 65px; /* Adjust the left position as needed */
+            font-size: 40px; /* Adjust the font size as needed */
+            color: yellow;
+            z-index: 2;
+            font-family: 'Amatic SC', cursive; /* Use the same font as the slogan */
+        }
 
         /* Style for the map container to fill the whole page */
         #map {
@@ -73,17 +72,6 @@
             z-index: 1; /* Ensure the image is on top of the map */
         }
 
-        /* Style for the draggable image */
-        .draggable-image {
-            position: absolute;
-            width: 100px; /* Adjust the width of the image as needed */
-            height: 100px; /* Adjust the height of the image as needed */
-            left: 25px;
-            bottom: 50px;
-            cursor: pointer;
-            touch-action: none; /* Disable default touch behavior */
-        }
-
         /* Style for the search container */
         #search-container {
             position: absolute;
@@ -101,58 +89,6 @@
             border-radius: 5px;
             outline: none;
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Add CSS for the pin container */
-        .pin-container {
-            position: absolute;
-            width: 50px; /* Adjust the size of the clickable area */
-            height: 50px; /* Adjust the size of the clickable area */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        /* Add CSS for the modal container */
-        .modal-container {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-
-        /* Add CSS for the modal content */
-        .modal-content {
-            background-color: #000000;
-            margin: 35% auto;
-            padding: 10px;
-            border: 3px solid white; /* Orange border color */
-            width: 75%; /* Increase the modal width as needed */
-            text-align: center;
-            position: relative; /* Relative positioning for the close button */
-            color: white;
-            border-radius: 25px; /* Add rounded corners to the modal */
-        }
-
-        /* Style for the close button */
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 20px;
-            cursor: pointer;
-            color: white; /* Close button color */
-            z-index: 2; /* Adjust the z-index value to make it highest */
-        }
-
-        /* Style for the file input */
-        .upload-photo {
-            margin-top: 10px;
         }
 
         /* Adjust styles for mobile devices here */
@@ -181,16 +117,6 @@
             #search {
                 width: 200px;
                 font-size: 14px;
-            }
-
-            /* Style for the draggable image */
-            .draggable-image {
-                position: absolute;
-                width: 50px; /* Adjust the width of the image as needed */
-                height: 50px; /* Adjust the height of the image as needed */
-                left: 25px;
-                bottom: 55px;
-                cursor: pointer;
             }
 
             /* Adjust the font size for the slogan on mobile devices */
@@ -224,15 +150,6 @@
             #search {
                 width: 200px;
                 font-size: 14px;
-            }
-
-            .draggable-image {
-                position: absolute;
-                width: 60px;
-                height: 60px;
-                left: 25px;
-                bottom: 50px;
-                cursor: pointer;
             }
         }
 
@@ -301,18 +218,25 @@
         #loading-logo {
             width: 200px; /* Adjust the width of the logo as needed */
             height: 200px; /* Adjust the height of the logo as needed */
-                }
+        }
 
-                #loading-text {
+        #loading-text {
             color: yellow;
             font-size: 24px; /* Adjust the font size as needed */
             margin-top: 20px; /* Adjust the margin as needed */
         }
 
+        /* Style for the "dm pin" image */
+.dm.pin {
+    position: absolute;
+    left: 10px;
+    top: 50px;
+    width: 50px;
+    height: 50px;
+    z-index: 3; /* Ensure the pin image is on top of the map */
+}
 
 
-
-        
     </style>
 </head>
 <body>
@@ -330,9 +254,7 @@
     </div>
 
     <!-- Text next to the draggable image -->
-<div id="draggable-text">Drag And Drop</div>
-
-
+    <div id="draggable-text">Drag And Drop</div>
 
     <a href="https://www.drmartens.com/us/en/"> <!-- Add your link URL here -->
         <img id="company-logo" src="dm logo.png" alt="Company Logo"> <!-- Add your logo image URL and alt text -->
@@ -342,22 +264,21 @@
         <div id="WalkYourDocs">#WalkYourDocs</div>
     </div>
     <img id="bottom-right-image" src="dm shoe.png" alt="Image"> <!-- Add your image URL and alt text -->
-
-    <!-- Draggable Image -->
-    <img class="draggable-image" src="dm pin.png" alt="Draggable Image" draggable="true" id="draggable-image" style="left:10px; top: 50px;">
+    <img id="dm-pin" class="dm pin" src="dm pin.png" style="left: 10px; top: 50px; width: 50px; height: 50px;">
+   
+   
 
     <script>
-        // Your Mapbox Access Token
-        mapboxgl.accessToken = 'pk.eyJ1IjoibXJtYXB6MzMiLCJhIjoiY2xtanBmNzZ4MDU1MTJrbDhmb3FxeW51NSJ9.pAVI4jVRkjQAQcu0xCUYqA';
+          // Your Mapbox Access Token
+          mapboxgl.accessToken = 'pk.eyJ1IjoibXJtYXB6MzMiLCJhIjoiY2xtanBmNzZ4MDU1MTJrbDhmb3FxeW51NSJ9.pAVI4jVRkjQAQcu0xCUYqA';
 
-        // Create a map instance
-        var map = new mapboxgl.Map({
-            container: 'map', // Specify the container ID
-            style: 'mapbox://styles/mapbox/dark-v10', // Use the dark-v10 style for a black background
-            center: [-99.3, 38], // Longitude and latitude of the initial map center (US center)
-            zoom: 2 // Adjust the zoom level as needed
-        });
-
+// Create a map instance
+var map = new mapboxgl.Map({
+    container: 'map', // Specify the container ID
+    style: 'mapbox://styles/mapbox/dark-v10', // Use the dark-v10 style for a black background
+    center: [-99.3, 38], // Longitude and latitude of the initial map center (US center)
+    zoom: 2 // Adjust the zoom level as needed
+});
         // Function to handle the search functionality
         document.getElementById("search").addEventListener("keypress", function (e) {
             if (e.key === "Enter") {
@@ -380,266 +301,61 @@
                 })
                 .catch(error => console.error(error));
         }
-
-        // Define an array to store the dropped pins and their coordinates
-        var droppedPins = [];
-
-        // Function to show the custom modal dialog for a specific pin
-        function showConfirmationModal(pinNumber) {
-            const modalId = `confirmation-modal-${pinNumber}`;
-            const modal = document.getElementById(modalId);
-            modal.style.display = "block";
-
-            // Handle the close button click
-            modal.querySelector(".close-button").addEventListener("click", function () {
-                modal.style.display = "none";
-            });
-
-            // Handle the file input change
-            const fileInput = modal.querySelector(".upload-photo");
-            const uploadedPhotoPreview = modal.querySelector(`#uploaded-photo-preview-${pinNumber}`);
-            fileInput.addEventListener("change", function (event) {
-                const selectedFile = fileInput.files[0];
-                if (selectedFile) {
-                    // Display the uploaded photo in the preview area
-                    const reader = new FileReader();
-                    reader.onload = function () {
-                        uploadedPhotoPreview.src = reader.result;
-                    };
-                    reader.readAsDataURL(selectedFile);
-                    // Disable the file input to prevent further uploads
-                    fileInput.disabled = true;
-                }
-            });
-
-            // Handle the "Yes" button click
-            modal.querySelector(".confirm-delete").addEventListener("click", function () {
-                modal.style.display = "none";
-                // Get the pin number from the button's data attribute
-                const pinToDelete = parseInt(this.getAttribute("data-pin"));
-                deletePin(pinToDelete);
-            });
-        }
-
-        // Function to create a new pin element
-        function createPinElement(lng, lat, pinNumber) {
-            // Create a pin container div
-            const pinContainer = document.createElement("div");
-            pinContainer.className = "pin-container";
-
-            // Create the pin image
-            const pinElement = new Image();
-            pinElement.src = "dm pin.png"; // Replace with your image URL
-            pinElement.width = 35; // Adjust width as needed
-            pinElement.height = 35; // Adjust height as needed
-
-            // Add the pin image to the pin container
-            pinContainer.appendChild(pinElement);
-
-            // Set the position of the pin container
-            pinContainer.style.position = "absolute";
-            pinContainer.style.left = "0px"; // Pin is positioned on the map using mapbox
-            pinContainer.style.top = "0px"; // Pin is positioned on the map using mapbox
-
-            // Add the pin container to the map
-            const pinMarker = new mapboxgl.Marker(pinContainer)
-                .setLngLat([lng, lat])
-                .addTo(map);
-
-            // Add a click event listener to the pin container
-            pinContainer.addEventListener("click", function () {
-                showConfirmationModal(pinNumber);
-            });
-
-            // Create a modal container for the pin
-            const modalId = `confirmation-modal-${pinNumber}`;
-            const modalContainer = document.createElement("div");
-            modalContainer.id = modalId;
-            modalContainer.className = "modal-container";
-
-            // Create the modal content
-            const modalContent = document.createElement("div");
-            modalContent.className = "modal-content";
-            
-            // Create and add the close button
-            const closeButton = document.createElement("span");
-            closeButton.className = "close-button";
-            closeButton.setAttribute("data-modal", modalId);
-            closeButton.innerHTML = "&times;";
-            modalContent.appendChild(closeButton);
-
-            // Create and add the uploaded photo preview
-            const uploadedPhotoPreview = document.createElement("img");
-            uploadedPhotoPreview.id = `uploaded-photo-preview-${pinNumber}`;
-            uploadedPhotoPreview.src = "";
-
-            uploadedPhotoPreview.style.maxWidth = "100%";
-            uploadedPhotoPreview.style.maxHeight = "200px";
-            modalContent.appendChild(uploadedPhotoPreview);
-
-            // Create and add the file input
-            const fileInput = document.createElement("input");
-            fileInput.type = "file";
-            fileInput.className = "upload-photo";
-            fileInput.accept = "image/*";
-            fileInput.style.marginLeft = "60px"; // Adjust the margin-left as needed
-            modalContent.appendChild(fileInput);
-
-            // Create and add the textarea for notes
-            const notesTextarea = document.createElement("textarea");
-            notesTextarea.id = `notes-textarea-${pinNumber}`;
-            notesTextarea.placeholder = "Add notes here...";
-            notesTextarea.style.width = "75%";
-            notesTextarea.style.height = "75px"; // Adjust the height as needed
-            notesTextarea.style.resize = "none"; // Prevent textarea from being resized by users
-            notesTextarea.style.marginTop = "10px"; // Add margin to the top of the textarea
-            notesTextarea.style.marginBottom = "0px"; // Add margin to the top of the textarea
-            modalContent.appendChild(notesTextarea);
-
-            // Load notes content from local storage, if available
-            const savedNotes = localStorage.getItem(`pinNotes-${pinNumber}`);
-            if (savedNotes) {
-                notesTextarea.value = savedNotes;
-            }
-            
-            // Add a change event listener to save notes content to local storage
-            notesTextarea.addEventListener("change", function () {
-                const notesContent = this.value;
-                localStorage.setItem(`pinNotes-${pinNumber}`, notesContent);
-            });
-
-            // Create and add the delete confirmation message
-            const deleteMessage = document.createElement("p");
-            deleteMessage.textContent = "Do you want to delete this pin?";
-            modalContent.appendChild(deleteMessage);
-
-            // Create and add the "Yes" button
-            const confirmDeleteButton = document.createElement("button");
-            confirmDeleteButton.className = "confirm-delete";
-            confirmDeleteButton.setAttribute("data-pin", pinNumber);
-            confirmDeleteButton.textContent = "Yes";
-            modalContent.appendChild(confirmDeleteButton);
-
-            // Append modal content to modal container
-            modalContainer.appendChild(modalContent);
-
-            // Append modal container to the body
-            document.body.appendChild(modalContainer);
-
-            return pinContainer;
-        }
-
-        // Function to delete a pin from the map and local storage
-        function deletePin(pinNumber) {
-            // Remove the pin from the map
-            map.removeLayer(`pin-${pinNumber}`);
-
-            // Remove the pin from the droppedPins array
-            const index = droppedPins.findIndex(pin => pin.number === pinNumber);
-            if (index !== -1) {
-                droppedPins.splice(index, 1);
-            }
-
-            // Save the updated droppedPins array to local storage
-            savePinsToLocalStorage();
-
-            // Clear the uploaded photo preview
-            const uploadedPhotoPreview = document.querySelector(`#uploaded-photo-preview-${pinNumber}`);
-            uploadedPhotoPreview.src = "";
-
-            // Remove the modal container from the DOM
-            const modalId = `confirmation-modal-${pinNumber}`;
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.remove();
-            }
-        }
-
-        // Function to set local storage with dropped pins
-        function savePinsToLocalStorage() {
-            localStorage.setItem("droppedPins", JSON.stringify(droppedPins));
-        }
-
-        // Function to load dropped pins from local storage
-        function loadPinsFromLocalStorage() {
-            var savedPins = localStorage.getItem("droppedPins");
-            if (savedPins) {
-                droppedPins = JSON.parse(savedPins);
-                droppedPins.forEach(function (pin) {
-                    createPinElement(pin.lngLat[0], pin.lngLat[1], pin.number);
-                });
-            }
-        }
-
-        // Touch event listeners for draggable image
-        const draggableImage = document.getElementById("draggable-image");
-        let offsetX, offsetY;
-
-        // Function to handle touch start event
-        function onTouchStart(event) {
-            const touch = event.touches[0];
-            offsetX = touch.clientX - draggableImage.getBoundingClientRect().left;
-            offsetY = touch.clientY - draggableImage.getBoundingClientRect().top;
-        }
-
-        // Function to handle touch move event
-        function onTouchMove(event) {
-            event.preventDefault();
-            const touch = event.touches[0];
-            const x = touch.clientX - offsetX;
-            const y = touch.clientY - offsetY;
-            draggableImage.style.left = x + "px";
-            draggableImage.style.top = y + "px";
-        }
-
-        // Function to handle touch end event
-        function onTouchEnd(event) {
-            // Get the final position of the draggable image
-            const finalX = parseFloat(draggableImage.style.left);
-            const finalY = parseFloat(draggableImage.style.top);
-
-            // Calculate the geographic coordinates of the final position
-            const lngLat = map.unproject([finalX, finalY]);
-
-            // Create a new pin object to store the pin and its coordinates
-            const newPin = {
-                lngLat: [lngLat.lng, lngLat.lat],
-                number: droppedPins.length + 1 // Assign a unique number to the pin
-            };
-
-            // Append the new pin to the droppedPins array
-            droppedPins.push(newPin);
-
-            // Create and add the pin element to the map
-            const pinElement = createPinElement(lngLat.lng, lngLat.lat, newPin.number);
-
-            // Save the droppedPins array to local storage
-            savePinsToLocalStorage();
-
-            // Reset the draggable image's position
-            draggableImage.style.left = "10px";
-            draggableImage.style.top = "50px";
-        }
-
-        // Add touch event listeners to the draggable image
-        draggableImage.addEventListener("touchstart", onTouchStart);
-        draggableImage.addEventListener("touchmove", onTouchMove);
-        draggableImage.addEventListener("touchend", onTouchEnd);
-
-        // Load dropped pins from local storage when the page loads
-        loadPinsFromLocalStorage();
-
+        
         setTimeout(function () {
-    const loadingScreen = document.getElementById("loading-screen");
-    loadingScreen.classList.add("fade-out");
-    setTimeout(function () {
-        loadingScreen.style.display = "none";
-    }, 1000); // Delay should match the animation duration
-}, 1000); // Adjust the delay as needed
+            const loadingScreen = document.getElementById("loading-screen");
+            loadingScreen.classList.add("fade-out");
+            setTimeout(function () {
+                loadingScreen.style.display = "none";
+            }, 1000); // Delay should match the animation duration
+        }, 1000); // Adjust the delay as needed
 
 
-// Coordinates for the Pearl District in Portland, Oregon
-const pearlDistrictCoordinates = [-122.6765, 45.5284]; // Replace with the actual coordinates
+        var dmPin = document.getElementById("dm-pin");
+
+dmPin.addEventListener("click", function () {
+    // Check if geolocation is available in the browser
+    if ("geolocation" in navigator) {
+        // Request permission to access the device's location
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                // Extract latitude and longitude from the position object
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+
+                // Create a new marker element for the custom marker
+                var customMarker = document.createElement("div");
+                customMarker.className = "custom-marker";
+                customMarker.style.backgroundImage = "url(dm pin.png)"; // Replace with your custom marker image
+                customMarker.style.width = "25px"; // Adjust the size as needed
+                customMarker.style.height = "25px"; // Adjust the size as needed
+                customMarker.style.zIndex = "3"; // Ensure it's on top of the map
+                customMarker.style.position = "absolute";
+
+                // Add the custom marker element to the map container
+                document.getElementById("map").appendChild(customMarker);
+
+                // Set the marker's position using the geolocation coordinates
+                var marker = new mapboxgl.Marker(customMarker)
+                    .setLngLat([longitude, latitude])
+                    .addTo(map);
+            },
+            function (error) {
+                // Handle the error when the user denies location access
+                console.error("Error getting geolocation:", error);
+                if (error.code === 1) {
+                    alert("You have denied access to your location. Please allow location access to use this feature.");
+                } else {
+                    alert("Error getting geolocation.");
+                }
+            }
+        );
+    } else {
+        alert("Geolocation is not available in your browser.");
+    }
+});
+
+
 
     </script>
 </body>
