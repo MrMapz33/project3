@@ -34,7 +34,7 @@
 
         /* Style for the text next to the draggable image */
         #draggable-text {
-            position: fixed;
+            position: absolute;
             top: 50px; /* Adjust the top position as needed */
             left: 10px; /* Adjust the left position as needed */
             right: 50; /* Adjust the right position to fill the container */
@@ -58,7 +58,7 @@
 
         /* Style for the logo at the top right of the page */
         #company-logo {
-            position: fixed;
+            position: absolute;
             top: 20px;
             right: 20px;
             width: 200px; /* Adjust the width of the logo as needed */
@@ -68,7 +68,7 @@
 
         /* Style for the image at the bottom right of the map */
         #bottom-right-image {
-            position: fixed;
+            position: absolute;
             bottom: 20px;
             right: 20px;
             width: 200px; /* Adjust the width of the image as needed */
@@ -78,7 +78,7 @@
 
         /* Style for the search container */
         #search-container {
-            position: fixed;
+            position: absolute;
             top: 20px;
             left: 20px;
             z-index: 2;
@@ -133,7 +133,7 @@
 
              /* Style for the text next to the draggable image */
         #draggable-text {
-            position: fixed;
+            position: absolute;
             top: 50px; /* Adjust the top position as needed */
             left: 10px; /* Adjust the left position as needed */
             right: 50; /* Adjust the right position to fill the container */
@@ -147,7 +147,7 @@
         }
             /* Adjust the font size for the slogan on mobile devices */
             #title {
-                position: fixed;
+                position: absolute;
                 font-size: 36px; /* Adjust the font size for mobile */
                 bottom: 5px;
             }
@@ -180,7 +180,7 @@
             }
 
             #bottom-left-image {
-                position: fixed;
+                position: absolute;
                 bottom: 55px;
                 left: 10px;
                 width: 150px;
@@ -188,7 +188,7 @@
             }
              /* Style for the text next to the draggable image */
         #draggable-text {
-            position: fixed;
+            position: absolute;
             top: 55px; /* Adjust the top position as needed */
             left: 18px; /* Adjust the left position as needed */
             right: 50; /* Adjust the right position to fill the container */
@@ -287,7 +287,12 @@
     border: 2px solid rgb(0, 0, 0); /* Add a white border for contrast */
 }
 
-        /* Style for the "dm pin" image */
+#search:focus {
+    font-size: 16px; /* Reset font size to the original value */
+    zoom: 1; /* Reset zoom to 1 */
+    -ms-text-size-adjust: 100%; /* Reset text size adjust to 100% for IE */
+    -webkit-text-size-adjust: 100%; /* Reset text size adjust to 100% for WebKit */
+}
     </style>
 </head>
 <body>
@@ -317,7 +322,7 @@
     </a>
     <div id="map"></div>
     <div id="title">
-        <div id="WalkYourDocs">#DrMartens</div>
+        <div id="WalkYourDocs">#DRMARTENS</div>
     </div>
     <img id="bottom-right-image" src="dm shoe.png" alt="Image"> <!-- Add your image URL and alt text -->
     <img id="bottom-left-image" src="social.png" alt="Image"> <!-- Add your image URL and alt text -->
